@@ -1,5 +1,6 @@
 # tag::importtool[]
 from langchain.tools import Tool
+
 # end::importtool[]
 from langchain.agents import initialize_agent, AgentType
 from langchain.agents import ConversationalChatAgent
@@ -9,6 +10,7 @@ from solutions.llm import llm
 
 # Use the Chains built in the previous lessons
 from solutions.tools.vector import kg_qa
+
 # from solutions.tools.finetuned import cypher_qa
 from solutions.tools.fewshot import cypher_qa
 
@@ -22,15 +24,15 @@ tools = [
     Tool.from_function(
         name="Vector Search Index",
         description="Provides information about movie plots using Vector Search",
-        func = kg_qa,
-    )
+        func=kg_qa,
+    ),
 ]
 # end::tools[]
 
 
 # tag::memory[]
 memory = ConversationBufferWindowMemory(
-    memory_key='chat_history',
+    memory_key="chat_history",
     k=5,
     return_messages=True,
 )
@@ -53,7 +55,7 @@ agent = initialize_agent(
     memory=memory,
     verbose=True,
     agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
-    agent_kwargs={"system_message": SYSTEM_MESSAGE}
+    agent_kwargs={"system_message": SYSTEM_MESSAGE},
 )
 # end::agent[]
 
@@ -67,7 +69,9 @@ def generate_response(prompt):
 
     response = agent(prompt)
 
-    return response['output']
+    return response["output"]
+
+
 # end::generate_response[]
 
 
