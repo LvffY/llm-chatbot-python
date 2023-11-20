@@ -1,17 +1,25 @@
 from langchain.agents import AgentType, initialize_agent
+
 # Include the LLM from a previous lesson
 from llm import llm
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 from langchain.tools import Tool
 
 from vector import kg_qa
+from tools.cypher import cypher_qa
+
 
 tools = [
     Tool.from_function(
         name="Vector Search Index",  # (1)
-        description="Provides information about movie plots using Vector Search", # (2)
-        func = kg_qa, # (3)
-    )
+        description="Provides information about movie plots using Vector Search",  # (2)
+        func=kg_qa,  # (3)
+    ),
+    Tool.from_function(
+        name="Graph Cypher QA Chain",  # (1)
+        description="Provides information about Movies including their Actors, Directors and User reviews",  # (2)
+        func=cypher_qa,  # (3)
+    ),
 ]
 
 SYSTEM_MESSAGE = """
@@ -23,7 +31,7 @@ Do not answer any questions using your pre-trained knowledge, only use the infor
 """
 
 memory = ConversationBufferWindowMemory(
-    memory_key='chat_history',
+    memory_key="chat_history",
     k=5,
     return_messages=True,
 )
@@ -35,8 +43,9 @@ agent = initialize_agent(
     memory=memory,
     verbose=True,
     agent=AgentType.CHAT_CONVERSATIONAL_REACT_DESCRIPTION,
-    agent_kwargs={"system_message": SYSTEM_MESSAGE}
+    agent_kwargs={"system_message": SYSTEM_MESSAGE},
 )
+
 
 def generate_response(prompt):
     """
@@ -46,4 +55,4 @@ def generate_response(prompt):
 
     response = agent(prompt)
 
-    return response['output']
+    return response["output"]
